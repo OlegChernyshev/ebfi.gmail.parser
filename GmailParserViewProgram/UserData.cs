@@ -72,6 +72,8 @@ namespace GmailParser
                 CancellationToken.None
             ).Result;
 
+            string str = GoogleWebAuthorizationBroker.Folder;
+            
             string[] scopes = new string[]
             {
                 GmailService.Scope.GmailReadonly,
