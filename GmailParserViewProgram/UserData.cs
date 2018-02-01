@@ -11,6 +11,8 @@ using Google.Apis.Gmail.v1;
 using Google.Apis.Gmail.v1.Data;
 using Google.Apis.Services;
 
+using GmailParserViewProgram.Act;
+
 namespace GmailParser
 {
     public class UserData
@@ -61,6 +63,8 @@ namespace GmailParser
         {
             string ApplicationName = "EmailParser.EBFI";
 
+            FileParser.Delete(GoogleWebAuthorizationBroker.Folder);
+
             credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
                 new ClientSecrets
                 {
@@ -72,7 +76,7 @@ namespace GmailParser
                 CancellationToken.None
             ).Result;
 
-            string str = GoogleWebAuthorizationBroker.Folder;
+            
             
             string[] scopes = new string[]
             {
@@ -91,7 +95,7 @@ namespace GmailParser
         public void func()
         {
             var request = gmailService.Users.Messages.List("me");
-
+     
             // List labels.
             IList<Message> labels = request.Execute().Messages;
 
@@ -126,14 +130,17 @@ namespace GmailParser
         public List<Message> ListMessagesMatchungQuerty(GmailService service, String userId, String query)
         {
 
-            
-
             List<Message> result = new List<Message>();
 
             var items = service.Users.Messages.List(userId).Execute().Messages;
 
             // мое тестовое письмо
-            Message message = service.Users.Messages.Get("me", "16146f5b41668414").Execute();
+            var emailRequest = service.Users.Messages.Get("me", "16146f5b41668414");
+            //emailRequest.Format = UsersResource.MessagesResource.GetRequest.FormatEnum.Raw;
+            Message message = emailRequest.Execute();
+
+
+            //service.Format = UsersResource.MessagesResource.GetRequest.FormatEnum.Raw;
 
             IList<MessagePartHeader> headers = message.Payload.Headers;
 

@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using GmailParser;
+using GmailParserViewProgram.Model;
 
 namespace GmailParserViewProgram
 {
@@ -20,15 +21,28 @@ namespace GmailParserViewProgram
         public FormMailTrigger()
         {
             InitializeComponent();
-
+            this.Show();
             fmtl = new FormMailTriggerLogic();
 
+            //Act.DataLoginAct.Read();
 
             UserData.Init().Email = "oleg";
             tb_mail.Text = UserData.GetUserData().Email;
 
-            UserData.GetUserData().CreateGmailService();
-            UserData.GetUserData().ListMessagesMatchungQuerty(UserData.GetUserData().GmailService, "me", String.Empty);
+            DataLoginModel dataLogin = new DataLoginModel("chernyshev360@gmail.com" , "1234");
+
+            GLogin.Init();
+            GLogin.Glogin.CreateGmailService();
+            GMessage gMessage = new GMessage(GLogin.Glogin.GmailService, dataLogin);
+
+            string str = gMessage.GetMessageRaw(gMessage.Find( new GRule("TestTag" , "testpath") , gMessage.GetMessages()));
+
+
+
+            //UserData.GetUserData().CreateGmailService();
+            //UserData.GetUserData().ListMessagesMatchungQuerty(UserData.GetUserData().GmailService, "me", String.Empty);
+
+            
 
             //Google.Apis.Gmail.v1.Data.Message mes = UserData.GetMessage(UserData.GetUserData().GmailService, "chernyshev360@gmail.com", "0");
             //tb_mail.Text = mes.Payload.Headers.ToString();
