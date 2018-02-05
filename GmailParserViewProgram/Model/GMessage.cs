@@ -31,14 +31,27 @@ namespace GmailParserViewProgram.Model
 
         // "16146f5b41668414"
 
-        public string GetMessageRaw( List<string> messageId)
+        public string GetMessageRaw( List<string> messageId )
         {
             foreach (string id in messageId)
             {
+
+
                 var emailRequest = service.Users.Messages.Get("me", id);
+                emailRequest.Format = UsersResource.MessagesResource.GetRequest.FormatEnum.Full;
+                Message m = emailRequest.Execute();
+                /*
                 emailRequest.Format = UsersResource.MessagesResource.GetRequest.FormatEnum.Raw;
                 byte[] bytes = Encoding.ASCII.GetBytes(emailRequest.Execute().Raw);
                 string str = Convert.ToBase64String(bytes);
+                */
+                var parts = emailRequest.Execute().Payload.Parts;
+                foreach (var part in parts)
+                {
+                   //tring str = part.
+                }
+
+                string str = emailRequest.Execute().Payload.Body.Data;
             }
             return "hello";
         }
@@ -55,8 +68,9 @@ namespace GmailParserViewProgram.Model
             List<string> listId = new List<string>();
             foreach (string id in ids)
             {
-                var messageData = service.Users.Messages.Get("me", id).Execute();
-                IList<MessagePartHeader> headers = messageData.Payload.Headers;
+                var messageData = service.Users.Messages.Get("me", id);
+                messageData.Format = UsersResource.MessagesResource.GetRequest.FormatEnum.Metadata;
+                IList<MessagePartHeader> headers = messageData.Execute().Payload.Headers;
                 foreach (var val in headers)
                     foreach (GRule item in GRule.grules)
                         if (val.Value == item.tag)
